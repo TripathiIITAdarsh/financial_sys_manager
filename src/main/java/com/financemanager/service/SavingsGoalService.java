@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +53,10 @@ public class SavingsGoalService {
         }
         if (request.getTargetDate() == null || !request.getTargetDate().isAfter(LocalDate.now())) {
             throw new BadRequestException("Target date must be a future date");
+        }
+        if (request.getStartDate() != null
+                && request.getStartDate().isAfter(request.getTargetDate())) {
+            throw new BadRequestException("Start date cannot be after target date");
         }
     }
 
@@ -100,10 +103,13 @@ public class SavingsGoalService {
 
     private SavingsGoalResponse toResponse(SavingsGoal goal) {
         BigDecimal progress = calculateProgress(goal);
-        BigDecimal percentage = goal.getTargetAmount().compareTo(BigDecimal.ZERO) == 0
-                ? BigDecimal.ZERO
-                : progress.multiply(BigDecimal.valueOf(100))
-                        .divide(goal.getTargetAmount(), 2, RoundingMode.HALF_UP);
+        Double percentage;
+        if (goal.getTargetAmount().compareTo(BigDecimal.ZERO) == 0) {
+            percentage = 0.0;
+        } else {
+            double raw = progress.doubleValue() * 100.0 / goal.getTargetAmount().doubleValue();
+            percentage = Math.round(raw * 100.0) / 100.0;
+        }
         BigDecimal remaining = goal.getTargetAmount().subtract(progress);
 
         SavingsGoalResponse resp = new SavingsGoalResponse();

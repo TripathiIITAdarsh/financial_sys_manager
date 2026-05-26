@@ -39,9 +39,9 @@ public class TransactionController {
     public ResponseEntity<Map<String, Object>> list(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(required = false) Long categoryId) {
+            @RequestParam(required = false) String category) {
         List<TransactionResponse> transactions = transactionService.list(
-                currentUserProvider.getCurrentUser(), startDate, endDate, categoryId);
+                currentUserProvider.getCurrentUser(), startDate, endDate, category);
         Map<String, Object> body = new HashMap<>();
         body.put("transactions", transactions);
         return ResponseEntity.ok(body);

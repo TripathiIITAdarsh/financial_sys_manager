@@ -14,7 +14,7 @@ public class SavingsGoalResponse {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
     private BigDecimal currentProgress;
-    private BigDecimal progressPercentage;
+    private Double progressPercentage;
     private BigDecimal remainingAmount;
 
     public SavingsGoalResponse() {}
@@ -31,8 +31,8 @@ public class SavingsGoalResponse {
     public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
     public BigDecimal getCurrentProgress() { return currentProgress; }
     public void setCurrentProgress(BigDecimal currentProgress) { this.currentProgress = currentProgress; }
-    public BigDecimal getProgressPercentage() { return progressPercentage; }
-    public void setProgressPercentage(BigDecimal progressPercentage) { this.progressPercentage = progressPercentage; }
+    public Double getProgressPercentage() { return progressPercentage; }
+    public void setProgressPercentage(Double progressPercentage) { this.progressPercentage = progressPercentage; }
     public BigDecimal getRemainingAmount() { return remainingAmount; }
     public void setRemainingAmount(BigDecimal remainingAmount) { this.remainingAmount = remainingAmount; }
 }

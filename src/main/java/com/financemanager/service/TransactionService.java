@@ -52,13 +52,14 @@ public class TransactionService {
         return toResponse(saved);
     }
 
-    public List<TransactionResponse> list(User user, LocalDate startDate, LocalDate endDate, Long categoryId) {
+    public List<TransactionResponse> list(User user, LocalDate startDate, LocalDate endDate, String categoryName) {
         List<Transaction> all = transactionRepository.findByUserOrderByDateDescIdDesc(user);
         List<TransactionResponse> out = new ArrayList<>();
         for (Transaction t : all) {
             if (startDate != null && t.getDate().isBefore(startDate)) continue;
             if (endDate != null && t.getDate().isAfter(endDate)) continue;
-            if (categoryId != null && !categoryId.equals(t.getCategory().getId())) continue;
+            if (categoryName != null && !categoryName.isBlank()
+                    && !categoryName.equalsIgnoreCase(t.getCategory().getName())) continue;
             out.add(toResponse(t));
         }
         return out;
