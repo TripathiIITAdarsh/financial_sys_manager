@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Finance Manager</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+    <header id="topbar" class="hidden">
+        <h1>Personal Finance Manager</h1>
+        <div class="user-area">
+            <span id="currentUserLabel"></span>
+            <button id="logoutBtn" class="btn-link">Logout</button>
+        </div>
+    </header>
+
+    <main id="app">
+        <!-- AUTH SCREEN -->
+        <section id="authScreen" class="auth-screen">
+            <div class="auth-card">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="login">Login</button>
+                    <button class="auth-tab" data-tab="register">Register</button>
+                </div>
+
+                <form id="loginForm" class="auth-form">
+                    <h2>Welcome back</h2>
+                    <label>Email
+                        <input name="username" type="email" required />
+                    </label>
+                    <label>Password
+                        <input name="password" type="password" required minlength="6" />
+                    </label>
+                    <button type="submit" class="btn-primary">Login</button>
+                    <p class="form-error" id="loginError"></p>
+                </form>
+
+                <form id="registerForm" class="auth-form hidden">
+                    <h2>Create your account</h2>
+                    <label>Email
+                        <input name="username" type="email" required />
+                    </label>
+                    <label>Password (min 6 chars)
+                        <input name="password" type="password" required minlength="6" />
+                    </label>
+                    <label>Full name
+                        <input name="fullName" type="text" required />
+                    </label>
+                    <label>Phone number
+                        <input name="phoneNumber" type="tel" required placeholder="+1234567890" />
+                    </label>
+                    <button type="submit" class="btn-primary">Register</button>
+                    <p class="form-error" id="registerError"></p>
+                </form>
+            </div>
+        </section>
+
+        <!-- APP SHELL -->
+        <section id="dashboard" class="hidden">
+            <nav class="tabs">
+                <button class="tab active" data-view="transactions">Transactions</button>
+                <button class="tab" data-view="categories">Categories</button>
+                <button class="tab" data-view="goals">Savings Goals</button>
+                <button class="tab" data-view="reports">Reports</button>
+            </nav>
+
+            <!-- TRANSACTIONS VIEW -->
+            <section class="view" id="view-transactions">
+                <div class="card">
+                    <h2>Add Transaction</h2>
+                    <form id="txForm" class="grid-form">
+                        <label>Amount
+                            <input name="amount" type="number" step="0.01" min="0.01" required />
+                        </label>
+                        <label>Date
+                            <input name="date" type="date" required />
+                        </label>
+                        <label>Category
+                            <select name="category" id="txCategorySelect" required></select>
+                        </label>
+                        <label class="full">Description
+                            <input name="description" type="text" />
+                        </label>
+                        <button type="submit" class="btn-primary">Add</button>
+                        <p class="form-error" id="txError"></p>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Filter</h2>
+                    <form id="txFilterForm" class="grid-form">
+                        <label>Start date
+                            <input name="startDate" type="date" />
+                        </label>
+                        <label>End date
+                            <input name="endDate" type="date" />
+                        </label>
+                        <label>Category
+                            <select name="category" id="txFilterCategory">
+                                <option value="">All</option>
+                            </select>
+                        </label>
+                        <label>Type
+                            <select name="type">
+                                <option value="">All</option>
+                                <option value="INCOME">Income</option>
+                                <option value="EXPENSE">Expense</option>
+                            </select>
+                        </label>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Apply</button>
+                            <button type="button" id="txFilterReset" class="btn-link">Reset</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Transactions</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Type</th>
+                                <th class="right">Amount</th>
+                                <th>Description</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="txTableBody">
+                            <tr><td colspan="6" class="muted">No transactions yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- CATEGORIES VIEW -->
+            <section class="view hidden" id="view-categories">
+                <div class="card">
+                    <h2>Create Custom Category</h2>
+                    <form id="categoryForm" class="grid-form">
+                        <label>Name
+                            <input name="name" type="text" required />
+                        </label>
+                        <label>Type
+                            <select name="type" required>
+                                <option value="INCOME">Income</option>
+                                <option value="EXPENSE">Expense</option>
+                            </select>
+                        </label>
+                        <button type="submit" class="btn-primary">Create</button>
+                        <p class="form-error" id="categoryError"></p>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>All Categories</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr><th>Name</th><th>Type</th><th>Source</th><th></th></tr>
+                        </thead>
+                        <tbody id="categoryTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- GOALS VIEW -->
+            <section class="view hidden" id="view-goals">
+                <div class="card">
+                    <h2>Create Savings Goal</h2>
+                    <form id="goalForm" class="grid-form">
+                        <label>Goal name
+                            <input name="goalName" type="text" required />
+                        </label>
+                        <label>Target amount
+                            <input name="targetAmount" type="number" step="0.01" min="0.01" required />
+                        </label>
+                        <label>Start date
+                            <input name="startDate" type="date" />
+                        </label>
+                        <label>Target date
+                            <input name="targetDate" type="date" required />
+                        </label>
+                        <button type="submit" class="btn-primary">Create</button>
+                        <p class="form-error" id="goalError"></p>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Your Goals</h2>
+                    <div id="goalsList" class="goal-grid">
+                        <p class="muted">No goals yet.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REPORTS VIEW -->
+            <section class="view hidden" id="view-reports">
+                <div class="card">
+                    <h2>Monthly Report</h2>
+                    <form id="monthlyForm" class="grid-form">
+                        <label>Year
+                            <input name="year" type="number" min="1900" max="2999" required />
+                        </label>
+                        <label>Month
+                            <select name="month" required>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </label>
+                        <button type="submit" class="btn-primary">Generate</button>
+                    </form>
+                    <div id="monthlyResult" class="report-result"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Yearly Report</h2>
+                    <form id="yearlyForm" class="grid-form">
+                        <label>Year
+                            <input name="year" type="number" min="1900" max="2999" required />
+                        </label>
+                        <button type="submit" class="btn-primary">Generate</button>
+                    </form>
+                    <div id="yearlyResult" class="report-result"></div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <div id="toast" class="toast hidden"></div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
